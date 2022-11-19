@@ -12,8 +12,8 @@ class Group(BaseModel):
     owner = models.ForeignKey(
         USER,
         on_delete=models.CASCADE,
-        related_name="groups",
-        related_query_name="group",
+        related_name="note_groups",  # senao da conflito com o atributo "groups" que o proprio usuario do django ja tem
+        related_query_name="note_group",
     )
 
     def get_notes(self):
@@ -50,8 +50,8 @@ class Note(BaseModel):
     owner = models.ForeignKey(
         USER,
         on_delete=models.CASCADE,
-        related_name="groups",
-        related_query_name="group",
+        related_name="notes",
+        related_query_name="note",
     )
 
     def __str__(self):
