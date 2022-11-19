@@ -1,11 +1,20 @@
 from django.db import models
+from django.conf import settings
 
 from ..base_app.models import BaseModel
+
+USER = settings.AUTH_USER_MODEL
 
 
 class Group(BaseModel):
     title = models.CharField(max_length=255, verbose_name="Título")
     description = models.TextField(verbose_name="Descrição")
+    owner = models.ForeignKey(
+        USER,
+        on_delete=models.CASCADE,
+        related_name="groups",
+        related_query_name="group",
+    )
 
     def get_notes(self):
         return self.notes.all()
@@ -27,10 +36,9 @@ class NoteManager(models.Manager):
         return queryset.filter(group__isnull=True)  # same as .filter(group=None)
 
 
-# TODO: ver como vai ficar a questao de imagens e videos pq eu vou querer poder colocar legenda ou nao
-# entao acho que vai ter que ser um model so pra o video e um many to many aqui na note, mesmo pra imagens
 class Note(BaseModel):
     body = models.TextField()
+
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
@@ -38,6 +46,12 @@ class Note(BaseModel):
         related_query_name="note",
         null=True,
         blank=True,
+    )
+    owner = models.ForeignKey(
+        USER,
+        on_delete=models.CASCADE,
+        related_name="groups",
+        related_query_name="group",
     )
 
     def __str__(self):

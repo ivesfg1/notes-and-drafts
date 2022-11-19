@@ -1,3 +1,13 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def draft_list(request):
+    pass
+
+
+def group_list(request):
+    pass
+
+
+def group_detail(request, pk=None):
+    pass
