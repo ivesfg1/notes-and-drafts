@@ -1,0 +1,37 @@
+<a href={% url 'draft-list' %}>ANOTAÇÔES GLOBAIS</a>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+SEUS GRUPOS
+
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit">
+</form>
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+{% for group in groups %}
+
+<a href={% url 'group-detail' group.pk %}>{{ group.title }}</a> <a href={% url 'group-delete' group.pk %}>Deletar</a>
+<p>{{ group.description }}</p>
+<br>
+<br>
+
+{% endfor %}

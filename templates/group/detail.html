@@ -1,0 +1,23 @@
+<a href={% url 'group-list' %}>Listagem de Grupos</a>
+
+<br>
+<br>
+<br>
+<br>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit">
+</form>
+
+<br>
+<br>
+<br>
+<br>
+
+{% for note in notes %}
+
+<p>{{ note.body }}</p> <a href={% url 'note-delete' note.pk %}>Deletar</a>
+
+{% endfor %}

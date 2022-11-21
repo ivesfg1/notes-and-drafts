@@ -6,6 +6,9 @@ from ..base_app.models import BaseModel
 USER = settings.AUTH_USER_MODEL
 
 
+# TODO: Ver dps se realmente precisa salvar o "owner" tanto em Group quanto em Note models
+
+
 class Group(BaseModel):
     title = models.CharField(max_length=255, verbose_name="Título")
     description = models.TextField(verbose_name="Descrição")
@@ -37,6 +40,13 @@ class NoteManager(models.Manager):
 
 
 class Note(BaseModel):
+
+    # manager
+
+    objects = NoteManager()
+
+    # fields
+
     body = models.TextField()
 
     group = models.ForeignKey(
