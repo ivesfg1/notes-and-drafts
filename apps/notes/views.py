@@ -9,9 +9,9 @@ def draft_list(request):
 
     context = {"drafts": Note.objects.global_notes()}
 
-    if request.method == "POST":
+    form = NoteForm(request.POST or None)
 
-        form = NoteForm(request.POST)
+    if request.method == "POST":
 
         if form.is_valid():
             note = form.save(commit=False)
@@ -19,7 +19,6 @@ def draft_list(request):
             note.save()
             return redirect(request.path)
 
-    form = NoteForm()
     context["form"] = form
     return render(request, "draft/list.html", context)
 
@@ -28,15 +27,16 @@ def group_list(request):
 
     context = {"groups": Group.objects.all()}
 
+    form = GroupForm(request.POST or None)
+
     if request.method == "POST":
-        form = GroupForm(request.POST)
+
         if form.is_valid():
             group = form.save(commit=False)
             group.owner = request.user
             group.save()
             return redirect(request.path)
 
-    form = GroupForm()
     context["form"] = form
 
     return render(request, "group/list.html", context)
@@ -52,9 +52,9 @@ def group_detail(request, pk=None):
     except Group.DoesNotExist:
         return redirect("group-list")
 
-    if request.method == "POST":
+    form = NoteForm(request.POST or None)
 
-        form = NoteForm(request.POST)
+    if request.method == "POST":
 
         if form.is_valid():
 
@@ -64,8 +64,6 @@ def group_detail(request, pk=None):
 
             note.save()
             return redirect(request.path)
-
-    form = NoteForm()
 
     context["group"] = group
     context["notes"] = group.get_notes()
@@ -84,26 +82,20 @@ def group_edit(request, pk=None):
     except Group.DoesNotExist:
         return redirect("group-list")
 
+    form = GroupForm(request.POST or None, instance=group)
+
     if request.method == "POST":
 
-        form = NoteForm(request.POST)
-
         if form.is_valid():
+            form.save()
+            # return redirect("group-detail", pk=group.pk)
+            return redirect(
+                request.GET.get("next") or "group-detail", pk=group.pk
+            )  # TODO: ainda nao entendi mt bem, ver dps se mesmo quando tem o "next" ele ainda passa o pk=group.pk
 
-            note = form.save(commit=False)
-            note.group = group
-            note.owner = group.owner
-
-            note.save()
-            return redirect(request.path)
-
-    form = NoteForm()
-
-    context["group"] = group
-    context["notes"] = group.get_notes()
     context["form"] = form
 
-    return render(request, "group/detail.html", context)
+    return render(request, "group/edit.html", context)
 
 
 def group_delete(request, pk=None):
@@ -131,5 +123,6 @@ def note_delete(request, pk=None):
 
     if note_group:  # pra checar se era uma anotação global ou não
         return redirect("group-detail", pk=note_group.pk)  # tem que ser pk aqui
+    # TODO: Fazer pagina pra confirmar deleção
 
     return redirect("draft-list")

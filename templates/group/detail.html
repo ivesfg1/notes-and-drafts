@@ -5,6 +5,15 @@
 <br>
 <br>
 
+<p>{{ group.title }}</p><a href={% url 'group-edit' group.pk %}>Editar grupo</a>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 <form method="POST">
     {% csrf_token %}
     {{ form }}
