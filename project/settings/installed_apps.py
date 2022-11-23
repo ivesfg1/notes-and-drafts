@@ -10,7 +10,8 @@ DJANGO_BUILT_IN_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    # "imagekit",  # pip install django-imagekit
+    "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
 PROJECT_APPS = [
