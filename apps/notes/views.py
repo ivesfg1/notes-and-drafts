@@ -13,7 +13,8 @@ from .forms import NoteForm
 @login_required
 def draft_list(request):
 
-    context = {"drafts": Note.objects.global_notes()}
+    logged_user = request.user
+    context = {"drafts": Note.objects.global_notes().filter(owner=logged_user)}
 
     form = NoteForm(request.POST or None)
 
@@ -21,7 +22,7 @@ def draft_list(request):
 
         if form.is_valid():
             note = form.save(commit=False)
-            note.owner = request.user
+            note.owner = logged_user
             note.save()
             return redirect(request.path)
 

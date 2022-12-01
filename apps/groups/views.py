@@ -13,7 +13,8 @@ from .forms import GroupForm
 @login_required
 def group_list(request):
 
-    context = {"groups": Group.objects.all()}
+    logged_user = request.user
+    context = {"groups": Group.objects.filter(owner=logged_user)}
 
     form = GroupForm(request.POST or None)
 
