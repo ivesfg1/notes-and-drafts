@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from . import models
+from .models import Note
 
-admin.site.register(models.Note)
-admin.site.register(models.Group)
+
+admin.site.register(Note)

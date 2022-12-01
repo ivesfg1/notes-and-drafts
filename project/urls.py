@@ -18,19 +18,21 @@ from django.urls import path, include
 
 from django.conf import settings
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from . import views
+
+
+project_urls = [
+    path("", views.index, name="index"),
+    path("", include("apps.notes.urls")),
+    path("groups/", include("apps.groups.urls")),
+]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # login views (api jwt)
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    # app urls
-    path("", include("apps.notes.urls")),
+    path("", include(project_urls)),
+    path("", include("apps.user_profile.urls")),
 ]
+
 
 if settings.DEBUG:
 

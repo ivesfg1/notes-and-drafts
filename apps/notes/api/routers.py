@@ -1,7 +1,7 @@
-from rest_framework.routers import DefaultRouter
+from rest_framework import routers
 
-from .viewsets import NoteViewset, GroupViewset
+from .viewsets import NoteViewset
 
-notes_and_groups_router = DefaultRouter()
-notes_and_groups_router.register("notes", NoteViewset, basename="api-note")
-notes_and_groups_router.register("groups", GroupViewset, basename="api-group")
+
+router = routers.DefaultRouter()
+router.register("notes", NoteViewset, basename="api-notes")

@@ -37,3 +37,12 @@ WSGI_APPLICATION = "project.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# The URL's or named URL patterns where requests are redirected after login or logout
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-LOGIN_REDIRECT_URL
+
+LOGIN_URL = "login"
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "login"

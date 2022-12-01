@@ -10,17 +10,16 @@ DJANGO_BUILT_IN_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "rest_framework",
-    "rest_framework_simplejwt",
+    "corsheaders",  # pip install django-cors-headers
+    "rest_framework",  # pip install djangorestframework
+    "rest_framework_simplejwt",  # pip install djangorestframework-simplejwt,
 ]
 
 PROJECT_APPS = [
     "apps.base_app",
+    "apps.user_profile",
+    "apps.groups",
     "apps.notes",
 ]
 
 INSTALLED_APPS = DJANGO_BUILT_IN_APPS + THIRD_PARTY_APPS + PROJECT_APPS
-
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
-# AUTH_USER_MODEL = ""

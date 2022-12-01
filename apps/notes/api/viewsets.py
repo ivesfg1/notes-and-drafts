@@ -1,14 +1,10 @@
 from rest_framework import viewsets
 
-from .serializers import NoteSerializer, GroupSerializer
-from ..models import Note, Group
+from .serializers import NoteSerializer
+from ..models import Note
 
 
 class NoteViewset(viewsets.ModelViewSet):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
 
-
-class GroupViewset(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer

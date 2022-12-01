@@ -11,20 +11,19 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('groups', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Note',
+            name='Group',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('body', models.TextField()),
-                ('group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='notes', related_query_name='note', to='groups.group')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notes', related_query_name='note', to=settings.AUTH_USER_MODEL)),
+                ('title', models.CharField(max_length=255, verbose_name='Título')),
+                ('description', models.TextField(verbose_name='Descrição')),
+                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='note_groups', related_query_name='note_group', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,

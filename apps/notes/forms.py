@@ -1,12 +1,6 @@
 from django import forms
 
-from .models import Group, Note
-
-
-class GroupForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        fields = ("title", "description")
+from .models import Note
 
 
 class NoteForm(forms.ModelForm):
