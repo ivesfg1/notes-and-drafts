@@ -6,6 +6,9 @@ from ..groups.models import Group  # ou entao from apps.groups.models import Gro
 from .models import Note
 from .forms import NoteForm
 
+# TODO: Adicionar nas views de detail e delete para permitir ação apenas se o
+# usuario logado atualmente for dono do objeto em questao
+
 
 @login_required
 def draft_list(request):

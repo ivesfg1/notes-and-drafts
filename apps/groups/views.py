@@ -6,6 +6,9 @@ from ..notes.forms import NoteForm  # ou from apps.notes.forms import NoteForm
 from .models import Group
 from .forms import GroupForm
 
+# TODO: Adicionar nas views de detail e delete para permitir ação apenas se o
+# usuario logado atualmente for dono do objeto em questao
+
 
 @login_required
 def group_list(request):
