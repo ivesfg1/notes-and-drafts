@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from ..notes.forms import NoteForm  # ou from apps.notes.forms import NoteForm
 
@@ -6,6 +7,7 @@ from .models import Group
 from .forms import GroupForm
 
 
+@login_required
 def group_list(request):
 
     context = {"groups": Group.objects.all()}
@@ -25,6 +27,7 @@ def group_list(request):
     return render(request, "group/list.html", context)
 
 
+@login_required
 def group_detail(request, pk=None):
 
     context = {}
@@ -55,6 +58,7 @@ def group_detail(request, pk=None):
     return render(request, "group/detail.html", context)
 
 
+@login_required
 def group_edit(request, pk=None):
 
     context = {}
@@ -81,6 +85,7 @@ def group_edit(request, pk=None):
     return render(request, "group/edit.html", context)
 
 
+@login_required
 def group_delete(request, pk=None):
 
     try:

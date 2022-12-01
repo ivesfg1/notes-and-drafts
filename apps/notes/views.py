@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 from ..groups.models import Group  # ou entao from apps.groups.models import Group
 
@@ -7,6 +7,7 @@ from .models import Note
 from .forms import NoteForm
 
 
+@login_required
 def draft_list(request):
 
     context = {"drafts": Note.objects.global_notes()}
@@ -25,6 +26,7 @@ def draft_list(request):
     return render(request, "draft/list.html", context)
 
 
+@login_required
 def note_delete(request, pk=None):
 
     try:
