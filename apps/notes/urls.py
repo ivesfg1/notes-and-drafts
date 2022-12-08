@@ -7,11 +7,20 @@ from .api.routers import router
 # TODO: pensar em como vai ser a questao de editar anotação, pq eu nao quero
 # que precise sair da pagina, quero deixar single page, talvez precise de JS
 
-urlpatterns = [
-    # drafts urls
-    path("drafts/", views.draft_list, name="draft-list"),
-    # notes urls
-    path("notes/<uuid:pk>/delete/", views.note_delete, name="note-delete"),
+draft_urls = [
+    path("", views.draft_list, name="draft-list"),
 ]
 
-urlpatterns += [path("api/", include(router.urls))]
+note_urls = [
+    path("<uuid:pk>/delete/", views.note_delete, name="note-delete"),
+]
+
+app_urls = [
+    path("drafts/", include(draft_urls)),
+    path("notes/", include(note_urls)),
+]
+
+urlpatterns = [
+    path("", include(app_urls)),
+    path("api/", include(router.urls)),
+]

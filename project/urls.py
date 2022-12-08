@@ -18,20 +18,21 @@ from django.urls import path, include
 
 from django.conf import settings
 
+from .utils import include_apps_urls
+
 from . import views
 
 
 project_urls = [
     path("", views.index, name="index"),
-    path("", include("apps.notes.urls")),
-    path("groups/", include("apps.groups.urls")),
 ]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(project_urls)),
-    path("", include("apps.user_profile.urls")),
 ]
+
+urlpatterns += include_apps_urls()
 
 
 if settings.DEBUG:

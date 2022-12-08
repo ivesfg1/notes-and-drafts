@@ -1,5 +1,11 @@
 import os
 
+from django.conf import settings
+from django.urls import path, include
+
+from django.contrib import admin
+from django.apps import apps as django_apps
+
 
 class ValueNotSetException(Exception):
     pass
@@ -157,3 +163,69 @@ def parse_string_into_boolean(variable_name, variable_from_env):
             f'The value of the "{variable_name}" variable on your .env must be a string of either "True" or "False"'
         )
     return STRING_TO_BOOLEAN_VALUES[variable_from_env]
+
+
+def include_apps_urls():
+    """
+    Returns a list of paths dinamically generated based on the apps in settings.INSTALLED_APPS,
+    but first, it checks if the app has an urls.py file to prevent ModuleNotFoundError.
+
+    Parameters
+    ----------
+        The function doesn't require any parameters.
+
+    Returns
+    -------
+        list
+            A list full of paths with the format: path("", include("apps.app_name.urls"))
+
+    Example
+    --------
+        Case 1:
+            INSTALLED_APPS = [
+                ...
+                "apps.app1",
+                "apps.app2",
+                ...
+            ]
+
+            returns: [
+                path("", include("apps.app1.urls")),
+                path("", include("apps.app1.urls"))
+            ]
+
+    END
+    ----
+    """
+    apps = [app for app in settings.INSTALLED_APPS if app.startswith("apps.")]
+
+    urlpatterns = []
+
+    for app in apps:
+
+        app_name = app.split(".")[-1]
+
+        app_urls_file = settings.BASE_DIR / "apps" / app_name / "urls.py"
+
+        if app_urls_file.exists():
+            urlpatterns.append(path("", include(f"{app}.urls")))
+
+    return urlpatterns
+
+
+def register_app_models_on_admin(app_name):
+    """
+    Dinamically register the current app models on the django admin site
+
+    If the model is already registered, it is skiped, wich is the case for
+    models that require custom AdminClasses, whose would need to be registered
+    manually as this method cannot predict how the custom Admin Classes would look.
+    """
+    app_config = django_apps.get_app_config(app_name)
+    app_models = app_config.get_models()
+
+    for model in app_models:
+        try:
+            admin.site.register(model)
+        except admin.sites.AlreadyRegistered:
+            pass
