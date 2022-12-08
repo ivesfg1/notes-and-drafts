@@ -6,8 +6,7 @@ from ..notes.forms import NoteForm  # ou from apps.notes.forms import NoteForm
 from .models import Group
 from .forms import GroupForm
 
-# TODO: Adicionar nas views de detail e delete para permitir ação apenas se o
-# usuario logado atualmente for dono do objeto em questao
+from django.http import HttpResponse
 
 
 @login_required
@@ -42,6 +41,9 @@ def group_detail(request, pk=None):
     except Group.DoesNotExist:
         return redirect("group-list")
 
+    if group.owner != request.user:
+        return HttpResponse("Você não tem permissão para realizar essa ação")
+
     form = NoteForm(request.POST or None)
 
     if request.method == "POST":
@@ -73,6 +75,9 @@ def group_edit(request, pk=None):
     except Group.DoesNotExist:
         return redirect("group-list")
 
+    if group.owner != request.user:
+        return HttpResponse("Você não tem permissão para realizar essa ação")
+
     form = GroupForm(request.POST or None, instance=group)
 
     if request.method == "POST":
@@ -97,6 +102,9 @@ def group_delete(request, pk=None):
 
     except Group.DoesNotExist:
         return redirect("group-list")
+
+    if group.owner != request.user:
+        return HttpResponse("Você não tem permissão para realizar essa ação")
 
     group.delete()
     return redirect("group-list")  # TODO: Fazer pagina pra confirmar deleção

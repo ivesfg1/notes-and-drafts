@@ -6,8 +6,7 @@ from ..groups.models import Group  # ou entao from apps.groups.models import Gro
 from .models import Note
 from .forms import NoteForm
 
-# TODO: Adicionar nas views de detail e delete para permitir ação apenas se o
-# usuario logado atualmente for dono do objeto em questao
+from django.http import HttpResponse
 
 
 @login_required
@@ -38,6 +37,9 @@ def note_delete(request, pk=None):
 
     except Group.DoesNotExist:
         return redirect("note-list")
+
+    if note.owner != request.user:
+        return HttpResponse("Você não tem permissão para realizar essa ação")
 
     note_group = note.group
     note.delete()
