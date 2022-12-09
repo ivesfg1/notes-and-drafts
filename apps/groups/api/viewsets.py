@@ -67,16 +67,17 @@ class GroupViewset(viewsets.ModelViewSet):
         serializer = NoteSerializer(note, many=False)
         return Response(serializer.data)
 
-    @notes_retrieve.mapping.put  # TODO: Ver se tem como evitar esse codigo duplicado chamando a url de retrieve pelo reverse() (e em outros cantos tbm)
+    # esse TODO ai debaixo talvez seja meio traiçoeiro por causa das permissoes, enfim é so olhar o get_object() original que vai dar pra entender
+    @notes_retrieve.mapping.put  # TODO: ver uma maneira melhor ao inves chamar o self.notes_retrieve e personalizar tbm o get_object() pra poder usar com objetos de Note tbm
     def notes_update(self, request, pk=None, note_pk=None):
+
+        note_retrieve = self.notes_retrieve(request, pk, note_pk)
+        if note_retrieve.status_code == status.HTTP_404_NOT_FOUND:
+            return note_retrieve
 
         group = self.get_object()
         queryset = group.get_notes()
-
-        try:
-            note = queryset.get(pk=note_pk)
-        except Note.DoesNotExist:
-            return Response({"detail": "Not found."}, status=404)
+        note = queryset.get(pk=note_pk)
 
         validated_data = request.data
         validated_data["owner"] = request.user.pk
@@ -94,18 +95,18 @@ class GroupViewset(viewsets.ModelViewSet):
             headers=headers,
         )
 
-    @notes_retrieve.mapping.patch  # TODO: Ver se tem como evitar esse codigo duplicado chamando a url de retrieve pelo reverse() (e em outros cantos tbm)
+    @notes_retrieve.mapping.patch  # TODO: ver uma maneira melhor ao inves chamar o self.notes_retrieve e personalizar tbm o get_object() pra poder usar com objetos de Note tbm
     def notes_partial_update(self, request, pk=None, note_pk=None):
 
         # TODO: Olhar tbm o update mixin pra melhorar essa questao do partial e pra entender melhor tbm
 
+        note_retrieve = self.notes_retrieve(request, pk, note_pk)
+        if note_retrieve.status_code == status.HTTP_404_NOT_FOUND:
+            return note_retrieve
+
         group = self.get_object()
         queryset = group.get_notes()
-
-        try:
-            note = queryset.get(pk=note_pk)
-        except Note.DoesNotExist:
-            return Response({"detail": "Not found."}, status=404)
+        note = queryset.get(pk=note_pk)
 
         validated_data = request.data
 
@@ -123,16 +124,16 @@ class GroupViewset(viewsets.ModelViewSet):
             headers=headers,
         )
 
-    @notes_retrieve.mapping.delete  # TODO: Ver se tem como evitar esse codigo duplicado chamando a url de retrieve pelo reverse() (e em outros cantos tbm)
-    def notes_partial_update(self, request, pk=None, note_pk=None):
+    @notes_retrieve.mapping.delete  # TODO: ver uma maneira melhor ao inves chamar o self.notes_retrieve e personalizar tbm o get_object() pra poder usar com objetos de Note tbm
+    def notes_delete(self, request, pk=None, note_pk=None):
+
+        note_retrieve = self.notes_retrieve(request, pk, note_pk)
+        if note_retrieve.status_code == status.HTTP_404_NOT_FOUND:
+            return note_retrieve
 
         group = self.get_object()
         queryset = group.get_notes()
-
-        try:
-            note = queryset.get(pk=note_pk)
-        except Note.DoesNotExist:
-            return Response({"detail": "Not found."}, status=404)
+        note = queryset.get(pk=note_pk)
 
         note.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
