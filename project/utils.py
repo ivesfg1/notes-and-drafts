@@ -94,9 +94,6 @@ def parse_comma_separated_string_into_list(variable_name, variable_from_env):
     END
     ----
     """
-    # TODO: Refatorar pra funcionar com iteráveis em geral, onde o usuario especifica
-    # que tipo de iteravel deve ser gerado, padrão sendo uma lista
-
     if variable_from_env is None:  # For when the value is not found on the .env file
         raise ValueNotSetException(
             f'You forgot to set the variable "{variable_name}" on your .env file. Set it with: "{variable_name} = value1, value2, value3"'
@@ -150,7 +147,6 @@ def parse_string_into_boolean(variable_name, variable_from_env):
     END
     ----
     """
-
     STRING_TO_BOOLEAN_VALUES = {"True": True, "False": False}
 
     if variable_from_env is None:  # For when the value is not found on the .env file
