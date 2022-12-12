@@ -15,9 +15,3 @@ urlpatterns = [
     path("api/", include(router.urls)),
     # path("api/", include(nested_router.urls)),
 ]
-
-from pprint import pprint
-
-print()
-pprint(nested_router.urls, indent=4)
-print()

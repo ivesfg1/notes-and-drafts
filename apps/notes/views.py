@@ -13,7 +13,7 @@ from django.http import HttpResponse
 def draft_list(request):
 
     logged_user = request.user
-    context = {"drafts": Note.objects.global_notes().filter(owner=logged_user)}
+    context = {"drafts": Note.objects.drafts().filter(owner=logged_user)}
 
     form = NoteForm(request.POST or None)
 

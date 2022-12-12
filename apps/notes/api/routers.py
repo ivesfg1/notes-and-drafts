@@ -1,7 +1,7 @@
 from rest_framework import routers
 
-from .viewsets import NoteViewset
+from .viewsets import DraftViewset
 
 
 router = routers.DefaultRouter()
-router.register("notes", NoteViewset, basename="api-notes")
+router.register("drafts", DraftViewset, basename="api-drafts")

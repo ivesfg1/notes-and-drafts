@@ -8,7 +8,7 @@ USER = settings.AUTH_USER_MODEL
 
 
 class NoteManager(models.Manager):
-    def global_notes(self):
+    def drafts(self):
         """
         Returns a queryset containing all notes that aren't related to any group.
         These are the "Global" notes, or "drafts".
