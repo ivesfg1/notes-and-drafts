@@ -1,15 +1,5 @@
 ENDPOINTS QUE DEVEM EXISTIR NA API
 
-endpoint: /notes/
-metodos: GET, POST
-status: FEITO
-descrição: deve retornar todas as anotações que pertencem ao usuário logado (retorna tanto as globais quanto as que pertencem à algum grupo)
-
-endpoint: /notes/<note_id>/
-metodos: GET, PUT, PATCH, DELETE
-status: FEITO
-descrição: deve retornar uma anotação espeficica filtrada por id que pertence ao usuário logado
-
 endpoint: /drafts/
 metodos: GET, POST
 status: PENDENTE
@@ -39,4 +29,3 @@ endpoint: /groups/<group_id>/notes/<note_id>/
 metodos: GET, PUT, PATCH, DELETE
 status: FEITO
 descrição: deve retornar uma anotação especifica filtrada por id que pertencem a um grupo especifico filtrado por id que pertence ao usuário logado
-
