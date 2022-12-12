@@ -13,5 +13,5 @@ app_urls = [
 urlpatterns = [
     path("groups/", include(app_urls)),
     path("api/", include(router.urls)),
-    # path("api/", include(nested_groups_notes_router.urls)),
+    path("api/", include(nested_groups_notes_router.urls)),
 ]
