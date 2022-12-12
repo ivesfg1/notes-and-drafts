@@ -8,3 +8,10 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = "__all__"
 
+
+class DraftSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Note
+        exclude = ["group"]
