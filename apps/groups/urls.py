@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from . import views
-from .api.routers import router, nested_router
+from .api.routers import router, nested_groups_notes_router
 
 app_urls = [
     path("", views.group_list, name="group-list"),
@@ -13,5 +13,5 @@ app_urls = [
 urlpatterns = [
     path("groups/", include(app_urls)),
     path("api/", include(router.urls)),
-    # path("api/", include(nested_router.urls)),
+    # path("api/", include(nested_groups_notes_router.urls)),
 ]

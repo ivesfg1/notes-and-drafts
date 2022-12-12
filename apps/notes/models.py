@@ -20,6 +20,9 @@ class NoteManager(models.Manager):
         return queryset.filter(group__isnull=True)  # same as .filter(group=None)
 
 
+# TODO: ver a possibilidade de usar um model Proxy (minha chance de aprender mais sobre
+# eu acho que encaixa sim no contexto do app, pois apesar de ser a mesma tabela, tem func-
+# ionalidades diferentes)
 class Note(BaseModel):
 
     # manager
