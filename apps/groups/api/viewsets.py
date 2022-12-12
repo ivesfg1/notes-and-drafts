@@ -10,59 +10,60 @@ from apps.notes.api.serializers import NoteSerializer
 from apps.notes.models import Note
 
 
-class GroupViewset(viewsets.ModelViewSet):
+class ExtraSerializerClassMixin:
+    """
+    Mixin para utilização de duas classes de serializers em uma mesma Viewset.
 
-    # class SERIALIZER_CLASSES:
+    Foi necessário para o caso de GroupViewset, que possui @actions para realizar
+    ações com serializers e objetos de Note, porem todos os metodos padroes pegavam
+    serializers e objetos de Group
+    """
+
+    extra_serializer_class = None
+
+    def get_extra_serializer(self, *args, **kwargs):
+        """
+        Return the extra serializer instance that should be used for validating and
+        deserializing input, and for serializing output.
+        """
+        extra_serializer_class = self.get_extra_serializer_class()
+        kwargs.setdefault("context", self.get_serializer_context())
+        return extra_serializer_class(*args, **kwargs)
+
+    def get_extra_serializer_class(self):
+        """
+        Return the class to use for the serializer.
+        Defaults to using `self.extra_serializer_class`.
+
+        You may want to override this if you need to provide different
+        serializations depending on the incoming request.
+
+        (Eg. admins get full serialization, others get basic serialization)
+        """
+        assert self.extra_serializer_class is not None, (
+            "Due to the ExtraSerializerClassMixin being used, '%s' should either include a `extra_serializer_class` attribute, "
+            "or override the `get_extra_serializer_class()` method."
+            % self.__class__.__name__
+        )
+        return self.extra_serializer_class
+
+
+class GroupViewset(ExtraSerializerClassMixin, viewsets.ModelViewSet):
 
     serializer_class = GroupSerializer
+    extra_serializer_class = NoteSerializer
 
     def get_queryset(self):
         user = self.request.user
         return Group.objects.filter(owner=user)
 
-    def get_serializer_class(self, notes=False):
-        """
-        Adicionei validação pra puxar o serializer de Note, para isso também tive
-        que personalizar o metodo get_serializer() para poder receber o parametro "notes"
-        """
-        if notes:
-            return NoteSerializer
-
-        return super().get_serializer_class()
-
-    def get_serializer(self, *args, notes=False, **kwargs):
-        """
-        Codigo copiado do codigo padrao: super().get_serializer() (padrao do DRF)
-        Geralmente apenas o get_serializer_class é personalizavel, mas tive que
-        personalizar esse também pra poder passar um valor adicional pra o metodo
-        get_serializer_class para só então conseguir personalizar da maneira que
-        queria.
-
-        Ler mais sobre o que foi personalizado na funcao get_serializer_class().
-        """
-        serializer_class = self.get_serializer_class(notes)
-        kwargs.setdefault("context", self.get_serializer_context())
-        return serializer_class(*args, **kwargs)
-
     @action(detail=True, methods=["get"])
     def notes(self, request, pk=None):
-
-        # queryset = self.filter_queryset(self.get_queryset())
-
-        # page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     return self.get_paginated_response(serializer.data)
-
-        # serializer = self.get_serializer(queryset, many=True)
-        # return Response(serializer.data)
 
         group = self.get_object()
         queryset = group.get_notes()
 
-        # note_serializer = NoteSerializer(queryset, many=True)
-        note_serializer = self.get_serializer(queryset, many=True, notes=True)
-
+        note_serializer = self.get_extra_serializer(queryset, many=True)
         return Response(note_serializer.data)
 
     @notes.mapping.post
