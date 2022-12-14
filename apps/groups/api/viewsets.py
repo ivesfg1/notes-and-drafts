@@ -9,87 +9,87 @@ from apps.notes.api.serializers import NoteSerializer
 from apps.notes.models import Note
 
 
-# Se for usar as rotas da Lib Nested Routers, basta essa ViewSet
-class GroupViewset(viewsets.ModelViewSet):
-
-    serializer_class = GroupSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return Group.objects.filter(owner=user)
-
-
+# # Se for usar as rotas da Lib Nested Routers, basta essa ViewSet
 # class GroupViewset(viewsets.ModelViewSet):
 
 #     serializer_class = GroupSerializer
 
 #     def get_queryset(self):
-
 #         user = self.request.user
-#         queryset = Group.objects.filter(owner=user)
+#         return Group.objects.filter(owner=user)
 
-#         if "notes" in self.action:
-#             group_pk = self.kwargs["pk"]
-#             queryset = Note.objects.filter(group=group_pk, owner=user)
 
-#         return queryset
+class GroupViewset(viewsets.ModelViewSet):
 
-#     def get_serializer_class(self):
+    serializer_class = GroupSerializer
 
-#         if "notes" in self.action:
-#             return NoteSerializer
+    def get_queryset(self):
 
-#         return super().get_serializer_class()
+        user = self.request.user
+        queryset = Group.objects.filter(owner=user)
 
-#     def get_object(self):
+        if "notes" in self.action:
+            group_pk = self.kwargs["pk"]
+            queryset = Note.objects.filter(group=group_pk, owner=user)
 
-#         if "notes" in self.action:
-#             from rest_framework.generics import get_object_or_404
+        return queryset
 
-#             queryset = self.filter_queryset(self.get_queryset())
+    def get_serializer_class(self):
 
-#             note_pk = self.kwargs["note_pk"]
-#             note = get_object_or_404(queryset, pk=note_pk)
-#             return note  # TODO: vai precisar personalizar o check_object_permissions tbm antes de retornar o note
+        if "notes" in self.action:
+            return NoteSerializer
 
-#         return super().get_object()
+        return super().get_serializer_class()
 
-#     def get_serializer_context(self):
+    def get_object(self):
 
-#         """
-#         Personalizei pra poder chamar o group_pk no .create() do serializer de
-#         NoteSerializer ao inves de passar diretamente pela @action de notes_create aqui
+        if "notes" in self.action:
+            from rest_framework.generics import get_object_or_404
 
-#         referencias: https://stackoverflow.com/questions/32810354/django-1-8-getting-kwargs-in-serializer
-#         """
+            queryset = self.filter_queryset(self.get_queryset())
 
-#         context = super().get_serializer_context()
+            note_pk = self.kwargs["note_pk"]
+            note = get_object_or_404(queryset, pk=note_pk)
+            return note  # TODO: vai precisar personalizar o check_object_permissions tbm antes de retornar o note
 
-#         if self.action in ["notes_create"]:
-#             context.update({"group_pk": self.kwargs["pk"]})
+        return super().get_object()
 
-#         return context
+    def get_serializer_context(self):
 
-#     @action(detail=True, methods=["get"])
-#     def notes(self, request, pk=None):
-#         return self.list(request)
+        """
+        Personalizei pra poder chamar o group_pk no .create() do serializer de
+        NoteSerializer ao inves de passar diretamente pela @action de notes_create aqui
 
-#     @notes.mapping.post
-#     def notes_create(self, request, pk=None):
-#         return self.create(request)
+        referencias: https://stackoverflow.com/questions/32810354/django-1-8-getting-kwargs-in-serializer
+        """
 
-#     @action(detail=True, methods=["get"], url_path=r"notes/(?P<note_pk>[^/.]+)")
-#     def notes_retrieve(self, request, pk=None, note_pk=None):
-#         return self.retrieve(request)
+        context = super().get_serializer_context()
 
-#     @notes_retrieve.mapping.put
-#     def notes_update(self, request, pk=None, note_pk=None):
-#         return self.update(request)
+        if self.action in ["notes_create"]:
+            context.update({"group_pk": self.kwargs["pk"]})
 
-#     @notes_retrieve.mapping.patch
-#     def notes_partial_update(self, request, pk=None, note_pk=None):
-#         return self.partial_update(request)
+        return context
 
-#     @notes_retrieve.mapping.delete
-#     def notes_delete(self, request, pk=None, note_pk=None):
-#         return self.destroy(request)
+    @action(detail=True, methods=["get"])
+    def notes(self, request, pk=None):
+        return self.list(request)
+
+    @notes.mapping.post
+    def notes_create(self, request, pk=None):
+        return self.create(request)
+
+    @action(detail=True, methods=["get"], url_path=r"notes/(?P<note_pk>[^/.]+)")
+    def notes_retrieve(self, request, pk=None, note_pk=None):
+        return self.retrieve(request)
+
+    @notes_retrieve.mapping.put
+    def notes_update(self, request, pk=None, note_pk=None):
+        return self.update(request)
+
+    @notes_retrieve.mapping.patch
+    def notes_partial_update(self, request, pk=None, note_pk=None):
+        return self.partial_update(request)
+
+    @notes_retrieve.mapping.delete
+    def notes_delete(self, request, pk=None, note_pk=None):
+        return self.destroy(request)
