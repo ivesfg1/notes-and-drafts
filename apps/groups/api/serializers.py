@@ -8,4 +8,11 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = "__all__"
+        fields = (
+            "id",
+            "title",
+            "description",
+            "created_at",
+            "last_updated",
+            "owner",
+        )

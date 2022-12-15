@@ -9,16 +9,6 @@ from apps.notes.api.serializers import NoteSerializer
 from apps.notes.models import Note
 
 
-# # Se for usar as rotas da Lib Nested Routers, basta essa ViewSet
-# class GroupViewset(viewsets.ModelViewSet):
-
-#     serializer_class = GroupSerializer
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         return Group.objects.filter(owner=user)
-
-
 class GroupViewset(viewsets.ModelViewSet):
 
     serializer_class = GroupSerializer
@@ -55,14 +45,12 @@ class GroupViewset(viewsets.ModelViewSet):
         return super().get_object()
 
     def get_serializer_context(self):
-
         """
         Personalizei pra poder chamar o group_pk no .create() do serializer de
         NoteSerializer ao inves de passar diretamente pela @action de notes_create aqui
 
         referencias: https://stackoverflow.com/questions/32810354/django-1-8-getting-kwargs-in-serializer
         """
-
         context = super().get_serializer_context()
 
         if self.action in ["notes_create"]:
